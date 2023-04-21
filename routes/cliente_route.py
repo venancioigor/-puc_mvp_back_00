@@ -1,6 +1,7 @@
 from datetime import datetime
 from flask import Blueprint, jsonify, request
-from database.database import  ClienteModel, ClienteSchema, db
+from sqlalchemy import func
+from database.database import  ClienteModel, ClienteSchema, ContaModel, PorquinhoModel, db
 from flasgger import swag_from
 
 clientes = Blueprint("clientes", __name__, url_prefix="/api/v1/clientes")
@@ -32,3 +33,17 @@ def get_cliente():
     cliente_schema = ClienteSchema()
     cliente_serialize = cliente_schema.dump(cliente)
     return jsonify(cliente_serialize)
+
+@clientes.route('/getClienteSaldoGeral')
+@swag_from('../docs/cliente/getClienteSaldoGeral.yaml')
+def saldo_geral():
+    cpf = request.args.get('cpf')
+    cliente = ClienteModel.query.filter_by(cpf=cpf).first()
+    if not cliente:
+        return jsonify({'error': 'Cliente não encontrado'}), 404
+    
+    saldo_porquinhos = db.session.query(func.sum(PorquinhoModel.saldo)).filter_by(id_cliente=cliente.id).scalar()
+    saldo_contas = db.session.query(func.sum(ContaModel.saldo)).filter_by(id_cliente=cliente.id).scalar()
+    saldo_geral = (saldo_porquinhos or 0) + (saldo_contas or 0)
+    
+    return jsonify({'saldo_total': saldo_geral}), 200

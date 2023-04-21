@@ -1,4 +1,4 @@
-Faz uma nova transação
+Cria um novo porquinho
 ---
 tags:
   - Porquinho
@@ -12,12 +12,11 @@ parameters:
           type: string
         objetivo:
           type: string
-        valor:
+        saldo:
           type: number
-        data:
-          type: string
-          format: date
-
+        # data:
+        #   type: string
+        #   format: date
     required: true
     description: Os dados da conta porquinho que será aberta.
 responses:

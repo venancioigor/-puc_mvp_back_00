@@ -1,0 +1,27 @@
+Retorna todas os porquinhos de um cliente
+---
+tags:
+  - Porquinho
+parameters:
+  - name: cpf
+    in: query
+    type: string
+    required: true
+    description: O CPF do cliente owner dos porquinhos
+
+responses:
+  200:
+    description: Os porquinhos foram encontradas com sucesso
+    schema:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Os IDs dos porquinhos criadas
+        contas:
+          type: array
+          items:
+            type: string
+          description: Os porquinhos do cliente
+  400:
+    description: Os dados de entrada são inválidos

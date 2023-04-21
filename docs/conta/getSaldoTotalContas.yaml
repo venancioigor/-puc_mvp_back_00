@@ -1,0 +1,16 @@
+Retorna o saldo total das contas de um cliente
+---
+tags:
+  - Contas
+parameters:
+  - name: cpf
+    in: query
+    type: string
+    required: true
+    description: O CPF do cliente owner das contas
+
+responses:
+  200:
+    description: O saldo total foi encontrado com sucesso
+  400:
+    description: Os dados de entrada são inválidos

@@ -1,0 +1,21 @@
+Deletar a conta cadastrada
+---
+tags:
+  - Contas
+parameters:
+  - name: id_conta
+    in: query
+    type: number
+    required: true
+    description: O id da conta a ser deletado
+  - name: cpf
+    in: query
+    type: string
+    required: true
+    description: O cpf da conta a ser deletada
+
+responses:
+  200:
+    description: A conta foi removida com sucesso
+  400:
+    description: Os dados de entrada são inválidos

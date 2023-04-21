@@ -57,12 +57,24 @@ class ContaModel(db.Model):
     conta = db.Column(db.String(9), nullable=False)
     id_cliente = db.Column(db.Integer, db.ForeignKey('cliente_model.id'), nullable=False)
     id_banco = db.Column(db.Integer, db.ForeignKey('banco_model.id'), nullable=False)
+    saldo = db.Column(db.Numeric(10,2), nullable=False)
 
-    saldo_conta = db.relationship('SaldoContaModel', backref='conta_model', uselist=False, lazy=True)   
+    #saldo_conta = db.relationship('SaldoContaModel', backref='conta_model', uselist=False, lazy=True)   
     banco = db.relationship('BancoModel', backref='contas')
    
     def __repr__(self):
         return f'<ContaModel {self.id}>'
+    
+    def transferir_valor_entre_conta_origem_para_destino(self, conta_destino, valor_origem):
+        if self.saldo < valor_origem:
+            return {'error': 'Saldo insuficiente na conta de origem'}
+        
+        self.saldo -= valor_origem
+        conta_destino.saldo += valor_origem
+        
+        #db.session.commit()
+
+        return {'mensagem':'Transferência concluída com sucesso'}
 
 # Definir o esquema de serialização
 class ContaSchema(SQLAlchemySchema):
@@ -74,6 +86,7 @@ class ContaSchema(SQLAlchemySchema):
     id_cliente = ma.auto_field()
     id_banco = ma.auto_field()
     conta = ma.auto_field()
+    saldo = ma.auto_field()
 
 
 # endregion
@@ -99,11 +112,25 @@ class PorquinhoModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     id_cliente = db.Column(db.Integer, db.ForeignKey('cliente_model.id'), nullable=False)
     objetivo = db.Column(db.String(100), nullable=False)
-    valor = db.Column(db.Numeric(10,2), nullable=False)
-    data = db.Column(db.Date, default=date.today, nullable=False) 
+    saldo = db.Column(db.Numeric(10,2), nullable=False)
+    #data = db.Column(db.Date, default=date.today, nullable=False) 
 
     def __repr__(self):
         return f'<PorquinhoModel {self.id}>'
+    
+    def transferir_valor_entre_conta_origem_para_destino(self, porquinho_destino, valor_origem):
+        if self.saldo < valor_origem:
+            return {'error': 'Saldo insuficiente na conta de origem'}
+        
+        self.saldo -= valor_origem
+        porquinho_destino.saldo += valor_origem
+        
+
+        #db.session.commit()
+
+        return {'mensagem':'Transferência concluída com sucesso'}
+
+
 
 class PorquinhoSchema(SQLAlchemySchema):
     class Meta:
@@ -112,8 +139,8 @@ class PorquinhoSchema(SQLAlchemySchema):
     id = ma.auto_field()
     id_cliente = ma.auto_field()
     objetivo = ma.auto_field()
-    valor = ma.auto_field()
-    data = ma.auto_field() 
+    saldo = ma.auto_field()
+    #data = ma.auto_field() 
   
 
 # endregion Banco

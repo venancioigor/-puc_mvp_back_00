@@ -14,6 +14,8 @@ parameters:
           type: string
         nome_banco:
           type: string
+        saldo:
+          type: number
     required: true
     description: Os dados da conta que será aberta.
 responses:

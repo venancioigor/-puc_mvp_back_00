@@ -1,0 +1,28 @@
+Realiza a transferência entre contas
+---
+tags:
+  - Contas
+parameters:
+  - name: body
+    in: body
+    schema:
+      type: object
+      properties:
+        id_origem:
+          type: number
+          description: ID da conta de origem
+        id_destino:
+          type: number
+          description: ID da conta de destino
+        valor_origem:
+          type: number
+          description: Valor da conta origem a ser transferida para conta destino
+        cpf:
+          type: string
+          description: CPF do cliente proprietário das contas
+
+responses:
+  200:
+    description: Transferência efetuada com sucesso
+  400:
+    description: Dados de entrada inválidos

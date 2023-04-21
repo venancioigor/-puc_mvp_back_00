@@ -1,0 +1,16 @@
+Retorna o Saldo Geral do Cliente
+---
+tags:
+  - Cliente
+parameters:
+  - name: cpf
+    in: query
+    type: string
+    required: true
+    description: O cpf do cliente 
+
+responses:
+  200:
+    description: O saldo geral foi encontrado com sucesso
+  400:
+    description: Os dados de entrada são inválidos
