@@ -1,0 +1,25 @@
+Retorna o Cliente cadastrado
+---
+tags:
+  - Cliente
+parameters:
+  - name: cpf
+    in: query
+    type: string
+    required: true
+    description: O nome do cliente que deve ser encontrado
+
+responses:
+  200:
+    description: O cliente foi encontrado com sucesso
+    schema:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: O ID do cliente criado
+        nome:
+          type: string
+          description: O nome do cliente registrado
+  400:
+    description: Os dados de entrada são inválidos

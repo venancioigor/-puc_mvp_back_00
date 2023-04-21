@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from database.database import BancoModel, ClienteModel, ContaModel, db
+from database.database import BancoModel, ClienteModel, ContaModel, ContaSchema, db
 from flasgger import swag_from
 
 contas = Blueprint("contas", __name__, url_prefix="/api/v1/contas")
@@ -30,3 +30,18 @@ def cadastrar_conta():
     db.session.commit()
 
     return jsonify({'message': 'Conta aberta com sucesso.'}), 201
+
+
+@contas.get('/getContasPorCliente')
+@swag_from('../docs/conta/getContasPorCliente.yaml')
+def get_contas_por_cliente():
+    cpf = request.args.get('cpf')
+
+    cliente = ClienteModel.query.filter_by(cpf=cpf).first()
+    if not cliente:
+        return jsonify({'message': 'Cliente não encontrado.'}), 404
+    
+    contas = ContaModel.query.filter_by(id_cliente=cliente.id).all()
+    contas_schema = ContaSchema(many=True)
+    contas_serializadas = contas_schema.dump(contas)
+    return jsonify(contas_serializadas)

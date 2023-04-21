@@ -1,0 +1,23 @@
+Retorna todos os bancos cadastrados
+---
+tags:
+  - Banco
+responses:
+  200:
+    description: Os bancos foram encontrados com sucesso
+    schema:
+      type: object
+      properties:
+        bancos:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                description: O ID do banco registrado
+              nome:
+                type: string
+                description: O nome do banco registrado
+  404:
+    description: Nenhum banco encontrado

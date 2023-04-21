@@ -1,0 +1,27 @@
+Retorna todas as contas de um cliente
+---
+tags:
+  - Contas
+parameters:
+  - name: cpf
+    in: query
+    type: string
+    required: true
+    description: O CPF do cliente owner das contas
+
+responses:
+  200:
+    description: As contas foram encontradas com sucesso
+    schema:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Os IDs das contas criadas
+        contas:
+          type: array
+          items:
+            type: string
+          description: As contas do cliente registradas
+  400:
+    description: Os dados de entrada são inválidos

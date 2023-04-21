@@ -7,6 +7,7 @@ from routes.banco_route import bancos
 from routes.conta_route import contas
 from routes.transacao_route import transacoes
 from routes.cliente_route import clientes
+from routes.porquinho_route import porquinhos
 
 app = Flask(__name__)
 CORS(app)
@@ -26,13 +27,12 @@ db.app=app
 db.init_app(app)
 ma.init_app(app)
 
+# Registrando endpoints
 app.register_blueprint(bancos)
 app.register_blueprint(contas)
 app.register_blueprint(transacoes)
 app.register_blueprint(clientes)
-
-# Criar as rotas da API
-# app.add_url_rule('/criarCliente', methods=['POST'], view_func=criar_cliente)
+app.register_blueprint(porquinhos)
 
 # Executar o aplicativo Flask
 if __name__ == '__main__':

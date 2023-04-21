@@ -1,0 +1,33 @@
+Faz uma nova transação
+---
+tags:
+  - Porquinho
+parameters:
+  - name: body
+    in: body
+    schema:
+      type: object
+      properties:
+        cpf:
+          type: string
+        objetivo:
+          type: string
+        valor:
+          type: number
+        data:
+          type: string
+          format: date
+
+    required: true
+    description: Os dados da conta porquinho que será aberta.
+responses:
+  201:
+    description: A conta porquinho foi aberta com sucesso.
+    schema:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: O ID da conta porquinho aberta
+  400:
+    description: Os dados de entrada são inválidos

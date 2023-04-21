@@ -7,6 +7,9 @@ from datetime import date, datetime
 db = SQLAlchemy()
 ma = Marshmallow()
 
+# CTRL + M + R --- cria region
+
+# region SaldoConta
 class SaldoContaModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     id_conta = db.Column(db.Integer, db.ForeignKey('conta_model.id'), nullable=False)
@@ -28,65 +31,10 @@ class SaldoContaSchema(SQLAlchemySchema):
     saldo = ma.auto_field()
     data = ma.auto_field()
 
-#ContaModel
-class ContaModel(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    conta = db.Column(db.String(9), nullable=False)
-    id_cliente = db.Column(db.Integer, db.ForeignKey('cliente_model.id'), nullable=False)
-    id_banco = db.Column(db.Integer, db.ForeignKey('banco_model.id'), nullable=False)
+# endregion
 
-    saldo_conta = db.relationship('SaldoContaModel', backref='conta_model', uselist=False, lazy=True)   
-   
-    def __repr__(self):
-        return f'<ContaModel {self.id}>'
+# region Banco
 
-# Definir o esquema de serialização
-class ContaSchema(SQLAlchemySchema):
-    class Meta:
-        model = ContaModel
-
-    id = ma.auto_field()
-    id_cliente = ma.auto_field()
-    id_banco = ma.auto_field()
-    conta = ma.auto_field()
-
-#SaldoModel
-class SaldoModel(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    id_cliente = db.Column(db.Integer, db.ForeignKey('cliente_model.id'), nullable=False)
-    valor = db.Column(db.Numeric(10, 2), nullable=False)
-
-class SaldoSchema(SQLAlchemySchema):
-    class Meta:
-        model = SaldoModel
-
-    id = ma.auto_field()
-    id_cliente = ma.auto_field()
-    valor = ma.auto_field()
-    
-#ClienteModel
-class ClienteModel(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    nome = db.Column(db.String(100), nullable=False)
-    cpf = db.Column(db.String(11), nullable=False)
-
-    contas = db.relationship('ContaModel', backref='cliente', lazy=True)
-    saldo = db.relationship('SaldoModel', backref='cliente', uselist=False, lazy=True)
-
-    def __repr__(self):
-        return f'<ClienteModel {self.id}>'
-
-
-class ClienteSchema(SQLAlchemySchema):
-    class Meta:
-        model = ClienteModel
-
-    id = ma.auto_field()
-    nome = ma.auto_field()
-    cpf = ma.auto_field()
-
-
-#BancoModel
 class BancoModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(100), nullable=False)
@@ -101,8 +49,102 @@ class BancoSchema(SQLAlchemySchema):
 
     id = ma.auto_field()
     nome = ma.auto_field()
+# endregion
 
-#TransacaoModel
+# region Conta
+class ContaModel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    conta = db.Column(db.String(9), nullable=False)
+    id_cliente = db.Column(db.Integer, db.ForeignKey('cliente_model.id'), nullable=False)
+    id_banco = db.Column(db.Integer, db.ForeignKey('banco_model.id'), nullable=False)
+
+    saldo_conta = db.relationship('SaldoContaModel', backref='conta_model', uselist=False, lazy=True)   
+    banco = db.relationship('BancoModel', backref='contas')
+   
+    def __repr__(self):
+        return f'<ContaModel {self.id}>'
+
+# Definir o esquema de serialização
+class ContaSchema(SQLAlchemySchema):
+    class Meta:
+        model = ContaModel
+        include_fk = True
+
+    id = ma.auto_field()
+    id_cliente = ma.auto_field()
+    id_banco = ma.auto_field()
+    conta = ma.auto_field()
+
+
+# endregion
+
+# region Saldo
+class SaldoModel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    id_cliente = db.Column(db.Integer, db.ForeignKey('cliente_model.id'), nullable=False)
+    valor = db.Column(db.Numeric(10, 2), nullable=False)
+
+class SaldoSchema(SQLAlchemySchema):
+    class Meta:
+        model = SaldoModel
+
+    id = ma.auto_field()
+    id_cliente = ma.auto_field()
+    valor = ma.auto_field()
+    
+# endregion
+
+# region Porquinho
+class PorquinhoModel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    id_cliente = db.Column(db.Integer, db.ForeignKey('cliente_model.id'), nullable=False)
+    objetivo = db.Column(db.String(100), nullable=False)
+    valor = db.Column(db.Numeric(10,2), nullable=False)
+    data = db.Column(db.Date, default=date.today, nullable=False) 
+
+    def __repr__(self):
+        return f'<PorquinhoModel {self.id}>'
+
+class PorquinhoSchema(SQLAlchemySchema):
+    class Meta:
+        model = PorquinhoModel
+
+    id = ma.auto_field()
+    id_cliente = ma.auto_field()
+    objetivo = ma.auto_field()
+    valor = ma.auto_field()
+    data = ma.auto_field() 
+  
+
+# endregion Banco
+
+# region Cliente
+class ClienteModel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nome = db.Column(db.String(100), nullable=False)
+    cpf = db.Column(db.String(11), nullable=False)
+
+    contas = db.relationship('ContaModel', backref='cliente', lazy=True)
+    porquinhos = db.relationship('PorquinhoModel', backref='cliente', lazy=True)
+    saldo = db.relationship('SaldoModel', backref='cliente', uselist=False, lazy=True)
+
+    def __repr__(self):
+        return f'<ClienteModel {self.id}>'
+
+
+class ClienteSchema(SQLAlchemySchema):
+    class Meta:
+        model = ClienteModel
+
+    id = ma.auto_field()
+    nome = ma.auto_field()
+    cpf = ma.auto_field()
+
+# endregion
+
+
+
+# region Transacao
 class TransacaoModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     id_conta = db.Column(db.Integer, db.ForeignKey('conta_model.id'), nullable=False)
@@ -131,3 +173,4 @@ class TransacaoSchema(SQLAlchemySchema):
     valor = ma.auto_field()
     descricao = ma.auto_field()
     data = ma.auto_field()
+# endregion
