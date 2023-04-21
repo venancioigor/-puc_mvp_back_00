@@ -1,0 +1,34 @@
+Faz uma nova transação
+---
+tags:
+  - Transacao
+parameters:
+  - name: body
+    in: body
+    schema:
+      type: object
+      properties:
+        conta:
+          type: string
+        descricao:
+          type: string
+        tipo:
+          type: string
+        data:
+          type: string
+          format: date
+        valor:
+          type: number
+    required: true
+    description: Os dados da transação que foi realizada.
+responses:
+  201:
+    description: A transação foi feita com sucesso.
+    schema:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: O ID da transação realizada
+  400:
+    description: Os dados de entrada são inválidos

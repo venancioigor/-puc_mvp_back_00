@@ -1,0 +1,38 @@
+Abre uma nova conta
+---
+tags:
+  - Contas
+parameters:
+  - name: body
+    in: body
+    schema:
+      type: object
+      properties:
+        conta:
+          type: string
+        cpf:
+          type: string
+        nome_banco:
+          type: string
+    required: true
+    description: Os dados da conta que será aberta.
+responses:
+  201:
+    description: A conta foi aberta com sucesso.
+    schema:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: O ID da conta criado
+        conta:
+          type: string
+          description: O número da conta do cliente 
+        cpf:
+          type: string
+          description: O cpf do cliente que referencia a conta
+        nome_banco:
+          type: string
+          description: O nome do banco dessa conta e cliente
+  400:
+    description: Os dados de entrada são inválidos

@@ -1,0 +1,33 @@
+Cria um novo cliente
+---
+tags:
+  - Cliente
+parameters:
+  - name: body
+    in: body
+    schema:
+      type: object
+      properties:
+        nome:
+          type: string
+        cpf:
+          type: string
+    required: true
+    description: O nome do cliente, com cpf, que deve ser criado
+responses:
+  201:
+    description: O cliente foi criado com sucesso
+    schema:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: O ID do cliente criado
+        nome:
+          type: string
+          description: O nome do cliente criado
+        cpf:
+          type: string
+          description: O cpf do cliente criado
+  400:
+    description: Os dados de entrada são inválidos

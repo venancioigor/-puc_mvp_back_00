@@ -1,0 +1,29 @@
+Cria um novo banco
+---
+tags:
+  - Banco
+parameters:
+  - name: body
+    in: body
+    schema:
+      type: object
+      properties:
+        nome:
+          type: string
+    required: true
+    description: O nome do banco que deve ser registrado
+
+responses:
+  201:
+    description: O banco foi registrado com sucesso
+    schema:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: O ID do banco criado
+        nome:
+          type: string
+          description: O nome do banco registrado
+  400:
+    description: Os dados de entrada são inválidos
