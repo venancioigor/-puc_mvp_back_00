@@ -61,15 +61,15 @@ def transferir_valor_entre_contas_porquinho():
     if not cliente:
         return jsonify({'error': 'Cliente não existe'})
     
-    porquinho_origem = PorquinhoModel.query.filter_by(id_origem=id_origem, id_cliente=cliente.id)
-    porquinho_destino = PorquinhoModel.query.filter_by(id_destino=id_destino, id_cliente=cliente.id)
+    porquinho_origem = PorquinhoModel.query.filter_by(id=id_origem, id_cliente=cliente.id).first()
+    porquinho_destino = PorquinhoModel.query.filter_by(id=id_destino, id_cliente=cliente.id).first()
 
     if not porquinho_origem:
             return {'error': 'Porquinho origem não encontrado'}
     if not porquinho_destino:
             return {'error': 'Porquinho destino não encontrado'}
     try:
-        porquinho_origem.transferir_valor_entre_conta_origem_para_destino(porquinho_destino, cliente.cpf, valor)
+        porquinho_origem.transferir_valor_entre_conta_origem_para_destino(porquinho_destino, valor)
         db.session.commit()
         return jsonify({'message': 'Transferência efetuada com sucesso'}), 200
     except ValueError as e:
