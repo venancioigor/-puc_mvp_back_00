@@ -5,8 +5,9 @@ from flask_marshmallow import Marshmallow
 from marshmallow_sqlalchemy import SQLAlchemySchema
 from flasgger import Swagger
 from flask_cors import CORS
-from routes import *
-from models import *
+#from models.cliente_model import ClienteModel
+from routes.cliente_route import *
+
 
 app = Flask(__name__)
 CORS(app)
@@ -20,6 +21,7 @@ swagger = Swagger(app)
 
 
 # Definir os modelos
+# SaldoContaModel
 class SaldoContaModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     id_conta = db.Column(db.Integer, db.ForeignKey('conta_model.id'), nullable=False)
@@ -41,7 +43,7 @@ class SaldoContaSchema(SQLAlchemySchema):
     saldo = ma.auto_field()
     data = ma.auto_field()
 
-
+#ContaModel
 class ContaModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     conta = db.Column(db.String(9), nullable=False)
@@ -63,6 +65,7 @@ class ContaSchema(SQLAlchemySchema):
     id_banco = ma.auto_field()
     conta = ma.auto_field()
 
+#SaldoModel
 class SaldoModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     id_cliente = db.Column(db.Integer, db.ForeignKey('cliente_model.id'), nullable=False)
@@ -76,7 +79,7 @@ class SaldoSchema(SQLAlchemySchema):
     id_cliente = ma.auto_field()
     valor = ma.auto_field()
     
-
+#ClienteModel
 class ClienteModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(100), nullable=False)
@@ -98,7 +101,7 @@ class ClienteSchema(SQLAlchemySchema):
     cpf = ma.auto_field()
 
 
-
+#BancoModel
 class BancoModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(100), nullable=False)
@@ -114,7 +117,7 @@ class BancoSchema(SQLAlchemySchema):
     id = ma.auto_field()
     nome = ma.auto_field()
 
-
+#TransacaoModel
 class TransacaoModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     id_conta = db.Column(db.Integer, db.ForeignKey('conta_model.id'), nullable=False)
@@ -174,55 +177,8 @@ app.config['SWAGGER'] = {
 
 
 # Criar as rotas da API
+# app.add_url_rule('/criarCliente', methods=['POST'], view_func=criar_cliente)
 
-@app.route('/criarCliente', methods=['POST'])
-def criar_cliente():
-    """
-    Cria um novo cliente
-
-    Esta rota permite criar um novo cliente, fornecendo o nome e CPF como entrada.
-
-    ---
-    parameters:
-      - name: body
-        in: body
-        schema:
-          type: object
-          properties:
-            nome:
-              type: string
-            cpf:
-              type: string
-        required: true
-        description: O nome do cliente, com cpf, que deve ser criado
-    responses:
-      201:
-        description: O cliente foi criado com sucesso
-        schema:
-          type: object
-          properties:
-            id:
-              type: integer
-              description: O ID do cliente criado
-            nome:
-              type: string
-              description: O nome do cliente criado
-            cpf:
-              type: string
-              description: O cpf do cliente criado
-      400:
-        description: Os dados de entrada são inválidos
-    """
-    nome = request.json['nome']
-    cpf = request.json['cpf']
-    novo_cliente = ClienteModel(nome=nome, cpf=cpf)
-    db.session.add(novo_cliente)
-    db.session.commit()
-    return jsonify({
-        'id': novo_cliente.id,
-        'nome': novo_cliente.nome,
-        'cpf': novo_cliente.cpf
-    }), 201
 
 @app.route('/cadastrarBanco', methods=['POST'])
 def criar_banco():
@@ -401,3 +357,4 @@ def criar_transacao():
 if __name__ == '__main__':
     db.create_all()
     app.run(debug=True)
+
