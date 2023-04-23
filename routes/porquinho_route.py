@@ -4,7 +4,7 @@ from sqlalchemy import func
 from database.database import  ClienteModel, PorquinhoModel, PorquinhoSchema, db
 from flasgger import swag_from
 
-porquinhos = Blueprint("porquinhos", __name__, url_prefix="/api/v1/porquinhos")
+porquinhos = Blueprint("porquinhos", __name__, url_prefix="/api/porquinhos")
 
 @porquinhos.route('/criarPorquinho', methods=['POST'])
 @swag_from('../docs/porquinho/criarPorquinho.yaml')

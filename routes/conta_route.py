@@ -3,7 +3,7 @@ from sqlalchemy import func
 from database.database import BancoModel, ClienteModel, ContaModel, ContaSchema, db
 from flasgger import swag_from
 
-contas = Blueprint("contas", __name__, url_prefix="/api/v1/contas")
+contas = Blueprint("contas", __name__, url_prefix="/api/contas")
 
 @contas.route('/abrirConta', methods=['POST'])
 @swag_from('../docs/conta/abrirConta.yaml')
