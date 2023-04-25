@@ -12,8 +12,6 @@ def criar_porquinho():
     data = request.json
     cpf = data['cpf']
 
-    #data_obj = datetime.strptime(data['data'], '%Y%m%d').date()
-
     # Consulta ao banco para encontrar o usuário com o CPF informado
     cliente = ClienteModel.query.filter_by(cpf=cpf).first()
     if not cliente:
