@@ -1,0 +1,25 @@
+Traz o banco cadastrado
+---
+tags:
+  - Banco
+parameters:
+  - name: id_banco
+    in: query
+    type: string
+    required: true
+    description: O id do banco que deve ser encontrado
+
+responses:
+  200:
+    description: O banco foi encontrado com sucesso
+    schema:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: O ID do banco 
+        nome:
+          type: string
+          description: O nome do banco
+  400:
+    description: Os dados de entrada são inválidos

@@ -55,6 +55,17 @@ def get_banco():
     banco_serializado = banco_schema.dump(banco)
     return jsonify(banco_serializado)
 
+@bancos.get('/getBancoById')
+@swag_from('../docs/banco/getBancoById.yaml')
+def get_banco_by_id():
+    idBanco = request.args.get('id_banco')
+    banco = BancoModel.query.get(idBanco)
+    if not banco:
+        return jsonify({'Erro': 'Banco não encontrado'}), 404
+    banco_schema = BancoSchema()
+    banco_serializado = banco_schema.dump(banco)
+    return jsonify(banco_serializado)
+
     
 
 
