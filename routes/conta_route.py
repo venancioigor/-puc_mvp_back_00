@@ -1,35 +1,38 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, abort, Response
 from sqlalchemy import func
 from database.database import BancoModel, ClienteModel, ContaModel, ContaSchema, db
 from flasgger import swag_from
 
 contas = Blueprint("contas", __name__, url_prefix="/api/contas")
 
-@contas.route('/abrirConta', methods=['POST'])
+@contas.route('/abrirConta', methods=['POST', 'OPTIONS'], endpoint='cadastrar_conta')
 @swag_from('../docs/conta/abrirConta.yaml')
 def cadastrar_conta():
-    
+    if request.method == "OPTIONS":
+        res = Response()
+        res.headers['X-Content-Type-Options'] = '*'
+        return res
+     
     cpf = request.json.get('cpf')
-    nome_banco = request.json.get('nome_banco')
+    id_banco = request.json.get('id_banco')
     saldo = request.json.get('saldo')
     conta=request.json.get('conta')
 
     # Consulta ao banco para encontrar o usuário com o CPF informado
     cliente = ClienteModel.query.filter_by(cpf=cpf).first()
     if not cliente:
-        return jsonify({'message': 'Cliente não encontrado.'}), 404
+        return abort({'message': 'Cliente não encontrado.'}), 404
 
-    if ContaModel.query.filter_by(conta=conta).first() is not None:
-       return jsonify({'error': 'Essa conta já foi cadastrada'}, 409)
+    if ContaModel.query.filter_by(id_cliente=cliente.id, conta=conta).first() is not None:
+       return abort({'error': 'Essa conta já foi cadastrada'}, 409)
     
     # Consulta ao banco para encontrar o banco com o nome informado
-    banco = BancoModel.query.filter_by(nome=nome_banco).first()
+    banco = BancoModel.query.get(id_banco)
     if not banco:
-        return jsonify({'message': 'Banco não encontrado.'}), 404
+        return abort({'message': 'Banco não encontrado.'}), 404
 
     # Cria uma nova instância da classe "ContaModel" com os dados informados pelo usuário
     nova_conta = ContaModel(id_cliente=cliente.id, id_banco=banco.id, conta=conta, saldo=saldo)
-
     # Salva a nova instância no banco de dados
     db.session.add(nova_conta)
     db.session.commit()

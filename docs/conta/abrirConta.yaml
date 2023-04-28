@@ -12,8 +12,8 @@ parameters:
           type: string
         cpf:
           type: string
-        nome_banco:
-          type: string
+        id_banco:
+          type: number
         saldo:
           type: number
     required: true
